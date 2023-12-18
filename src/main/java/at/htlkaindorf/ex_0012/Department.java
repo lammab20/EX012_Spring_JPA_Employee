@@ -26,10 +26,10 @@ public class Department {
     @JsonAlias("name")
     private String deptName;
 
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
     private List<Employee> employees = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="emp_no")
     private Employee deptManager;
 }

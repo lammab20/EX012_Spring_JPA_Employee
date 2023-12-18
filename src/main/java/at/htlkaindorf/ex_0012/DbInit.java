@@ -18,9 +18,12 @@ public class DbInit {
     private Logger log = LoggerFactory.getLogger(getClass());
     private DepartmentRepository departmentRepository;
 
+    private EmployeeRepository employeeRepository;
+
     @Autowired
-    public DbInit(DepartmentRepository departmentRepository){
+    public DbInit(DepartmentRepository departmentRepository, EmployeeRepository employeeRepository){
         this.departmentRepository = departmentRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     @PostConstruct
@@ -35,6 +38,14 @@ public class DbInit {
 
             ObjectMapper om = new ObjectMapper();
             List<Department> departmentList = om.readValue(text, new TypeReference<List<Department>>() {});
+
+            log.info("--> " + departmentList.size());
+            departmentList.forEach(d -> {
+                log.info(d.getDeptName() + " " + d.getEmployees().size());
+                d.getEmployees().forEach(e -> {
+                    e.setDepartment(d);
+                });
+            });
 
             departmentRepository.saveAll(departmentList);
         } catch (Exception e) {
